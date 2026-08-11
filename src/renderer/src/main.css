@@ -1,0 +1,99 @@
+@import 'tailwindcss';
+
+/* Two-theme token sets. Dark is the default identity; light mirrors it.
+   Blue = action/activity, red = brand mark + destructive + failed,
+   green = done, amber = held. */
+:root {
+  color-scheme: dark;
+  --t-ink: #12151a;
+  --t-panel: #171b21;
+  --t-raised: #1f2530;
+  --t-line: #2a323e;
+  --t-fg: #e8ecf1;
+  --t-muted: #94a0ae;
+  --t-faint: #5f6b7a;
+  --t-accent: #3e8bff;
+  --t-accent-hi: #5b9dff;
+  --t-brand: #e5484d;
+  --t-brand-hi: #f2555a;
+  --t-ok: #3fb27f;
+  --t-warn: #d9a514;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --t-ink: #eef1f5;
+  --t-panel: #ffffff;
+  --t-raised: #e2e7ee;
+  --t-line: #d3dae3;
+  --t-fg: #1c2530;
+  --t-muted: #56647a;
+  --t-faint: #8d99a9;
+  --t-accent: #2668d9;
+  --t-accent-hi: #1e56b8;
+  --t-brand: #d33540;
+  --t-brand-hi: #b92c36;
+  --t-ok: #1e7f56;
+  --t-warn: #91670a;
+}
+
+@theme {
+  --color-ink: var(--t-ink);
+  --color-panel: var(--t-panel);
+  --color-raised: var(--t-raised);
+  --color-line: var(--t-line);
+  --color-fg: var(--t-fg);
+  --color-muted: var(--t-muted);
+  --color-faint: var(--t-faint);
+  --color-accent: var(--t-accent);
+  --color-accent-hi: var(--t-accent-hi);
+  --color-azure: var(--t-accent);
+  --color-brand: var(--t-brand);
+  --color-brand-hi: var(--t-brand-hi);
+  --color-ok: var(--t-ok);
+  --color-warn: var(--t-warn);
+
+  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Cascadia Mono', Consolas, 'Courier New', monospace;
+}
+
+body {
+  @apply bg-ink text-fg font-sans text-[13px] antialiased;
+  user-select: none;
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+button {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 2px solid var(--t-accent);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--t-line);
+  border-radius: 5px;
+  border: 2px solid var(--t-ink);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

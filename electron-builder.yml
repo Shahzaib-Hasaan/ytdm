@@ -1,0 +1,16 @@
+appId: com.ytdm.app
+productName: YTDM
+directories:
+  output: release
+files:
+  - out/**
+  - package.json
+win:
+  icon: build/icon.ico
+  target:
+    - nsis
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  deleteAppDataOnUninstall: false

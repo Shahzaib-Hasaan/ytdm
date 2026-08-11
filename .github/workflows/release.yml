@@ -1,0 +1,40 @@
+name: release
+
+# Builds the Windows installer whenever a version tag is pushed
+# (git tag v1.0.1 && git push --tags) and attaches it to a GitHub Release.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - run: npx electron-builder --win --publish never
+
+      # --- SignPath code signing goes here once the project is approved ---
+      # https://about.signpath.io/documentation/signpath-foundation
+      # The SignPath GitHub Action submits release/*.exe for signing and
+      # replaces it with the signed binary before the release step below.
+
+      - name: Attach installer to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.exe
+            release/*.blockmap
