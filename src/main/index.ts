@@ -121,6 +121,10 @@ if (!gotLock) {
       mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
     }
 
+    // First run: downloads yt-dlp/Deno/ffmpeg; later runs: self-updates yt-dlp.
+    // Without this the engine never becomes ready — the app sits on "checking…".
+    void bins.ensureAll()
+
     // Proper Windows-app behavior: closing the window keeps downloads running
     // in the tray (opt-out in Settings); Exit lives in the tray menu.
     mainWindow.on('close', (e) => {
