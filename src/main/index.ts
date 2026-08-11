@@ -28,6 +28,16 @@ function showWindow(): void {
   mainWindow.focus()
 }
 
+/** IDM-style tray click: hidden -> show, visible -> tuck back into the tray. */
+function toggleWindow(): void {
+  if (!mainWindow) return
+  if (mainWindow.isVisible() && !mainWindow.isMinimized()) {
+    mainWindow.hide()
+  } else {
+    showWindow()
+  }
+}
+
 function createTray(): void {
   const image = nativeImage.createFromPath(iconPath()).resize({ width: 16, height: 16 })
   tray = new Tray(image)
@@ -48,6 +58,7 @@ function createTray(): void {
       }
     ])
   )
+  tray.on('click', toggleWindow)
   tray.on('double-click', showWindow)
 }
 
