@@ -13,6 +13,24 @@ so SmartScreen shows a warning the first time: click **More info → Run anyway*
 fades as more people install the same release. The source is public — audit it, or build the
 installer yourself with `npm run dist`.
 
+## Code signing policy
+
+Free code signing provided by [SignPath.io](https://signpath.io), certificate by
+[SignPath Foundation](https://signpath.org).
+
+Team roles: [Shahzaib Hassan](https://github.com/Shahzaib-Hasaan) — sole maintainer,
+acting as Author, Reviewer, and release Approver.
+
+Releases are built from tagged commits by [GitHub Actions](.github/workflows/release.yml)
+and signed only after manual approval.
+
+## Privacy policy
+
+YTDM does not collect, store, or transmit any personal data or telemetry. The app talks
+to exactly three kinds of servers: YouTube (to fetch the videos you request), GitHub
+(to download its open-source engine components and app updates), and nothing else.
+All settings and download history stay in a local database on your machine.
+
 ## Support / Contact
 
 Built by **Shahzaib Hassan** · <shahxeebhassan@gmail.com> · [shahzaibbuilds.me](https://shahzaibbuilds.me) · [LinkedIn](https://www.linkedin.com/in/shahzaib-hassan-ai-developer/)
