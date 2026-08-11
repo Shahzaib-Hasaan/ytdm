@@ -1,5 +1,5 @@
 {
-  "name": "yt-downloader",
+  "name": "ytdm",
   "version": "1.0.0",
   "description": "YTDM - YouTube download manager",
   "main": "./out/main/index.js",
@@ -10,7 +10,7 @@
     "dist": "electron-vite build && electron-builder --win"
   },
   "keywords": [],
-  "author": "Adil Waqas <adilwaqas255@gmail.com>",
+  "author": "Shahzaib Hassan <shahxeebhassan@gmail.com>",
   "license": "UNLICENSED",
   "type": "commonjs",
   "dependencies": {

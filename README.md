@@ -15,7 +15,7 @@ installer yourself with `npm run dist`.
 
 ## Support / Contact
 
-Built by **Adil Waqas** · <adilwaqas255@gmail.com>
+Built by **Shahzaib Hassan** · <shahxeebhassan@gmail.com> · [shahzaibbuilds.me](https://shahzaibbuilds.me) · [LinkedIn](https://www.linkedin.com/in/shahzaib-hassan-ai-developer/)
 
 Found a bug or want a feature? Open an issue on this repo or email me. Please include the
 error text from the row's status chip (hover it) when reporting download failures.

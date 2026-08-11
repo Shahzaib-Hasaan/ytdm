@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ExternalLink, Mail } from 'lucide-react'
+import { ExternalLink, Globe, Mail } from 'lucide-react'
 
-const CONTACT_EMAIL = 'adilwaqas255@gmail.com'
-// Set once the GitHub repo is public — button hides while empty.
-const GITHUB_URL = ''
+const CONTACT_EMAIL = 'shahxeebhassan@gmail.com'
+const WEBSITE_URL = 'https://shahzaibbuilds.me'
+const LINKEDIN_URL = 'https://www.linkedin.com/in/shahzaib-hassan-ai-developer/'
+const GITHUB_URL = 'https://github.com/Shahzaib-Hasaan/ytdm'
 
 export default function AboutDialog(props: { onClose: () => void }): React.JSX.Element {
   const [info, setInfo] = useState<{ version: string; ytdlpVersion: string | null } | null>(null)
@@ -48,24 +49,34 @@ export default function AboutDialog(props: { onClose: () => void }): React.JSX.E
 
         <div className="space-y-2 border-t border-line px-6 py-4 text-xs">
           <div className="text-muted">
-            Built by <span className="font-medium text-fg">Adil Waqas</span>. Something broken,
+            Built by <span className="font-medium text-fg">Shahzaib Hassan</span>. Something broken,
             or an idea? Reach out — feedback shapes what gets built next.
           </div>
-          <div className="flex gap-2 pt-1">
+          <div className="flex flex-wrap gap-2 pt-1">
             <button
               onClick={() => void window.api.openUrl(`mailto:${CONTACT_EMAIL}`)}
               className="flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-xs font-medium text-fg hover:bg-raised"
             >
               <Mail size={13} /> {CONTACT_EMAIL}
             </button>
-            {GITHUB_URL ? (
-              <button
-                onClick={() => void window.api.openUrl(GITHUB_URL)}
-                className="flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-xs font-medium text-fg hover:bg-raised"
-              >
-                <ExternalLink size={13} /> GitHub
-              </button>
-            ) : null}
+            <button
+              onClick={() => void window.api.openUrl(WEBSITE_URL)}
+              className="flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-xs font-medium text-fg hover:bg-raised"
+            >
+              <Globe size={13} /> shahzaibbuilds.me
+            </button>
+            <button
+              onClick={() => void window.api.openUrl(LINKEDIN_URL)}
+              className="flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-xs font-medium text-fg hover:bg-raised"
+            >
+              <ExternalLink size={13} /> LinkedIn
+            </button>
+            <button
+              onClick={() => void window.api.openUrl(GITHUB_URL)}
+              className="flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-xs font-medium text-fg hover:bg-raised"
+            >
+              <ExternalLink size={13} /> GitHub
+            </button>
           </div>
         </div>
 
