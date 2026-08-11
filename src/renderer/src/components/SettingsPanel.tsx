@@ -105,6 +105,7 @@ export default function SettingsPanel(props: { onClose: () => void }): React.JSX
           {(
             [
               ['clipboardWatch', 'Watch clipboard', 'copied YouTube links open the add dialog'],
+              ['closeToTray', 'Keep running in tray on close', 'downloads continue; Exit lives in the tray menu'],
               ['embedThumbnail', 'Embed thumbnail', 'cover art inside the file'],
               ['embedMetadata', 'Embed metadata', 'title, channel, date'],
               ['embedSubs', 'Embed subtitles', 'burned into the file container'],

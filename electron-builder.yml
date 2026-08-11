@@ -14,3 +14,10 @@ nsis:
   allowToChangeInstallationDirectory: true
   perMachine: false
   deleteAppDataOnUninstall: false
+extraResources:
+  - from: build/icon.png
+    to: icon.png
+publish:
+  provider: github
+  owner: Shahzaib-Hasaan
+  repo: ytdm

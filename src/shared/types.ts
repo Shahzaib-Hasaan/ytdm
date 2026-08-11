@@ -96,6 +96,13 @@ export interface Settings {
   subLangs: string
   /** Send Firefox's YouTube cookies with requests — fewer rate limits, unlocks age-restricted */
   useFirefoxCookies: boolean
+  /** Closing the window hides to the system tray instead of quitting */
+  closeToTray: boolean
+}
+
+export interface UpdateStatus {
+  state: 'idle' | 'available' | 'downloading' | 'ready' | 'error'
+  version: string | null
 }
 
 export interface EngineStatus {

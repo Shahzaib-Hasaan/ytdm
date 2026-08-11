@@ -63,7 +63,8 @@ export default function App(): React.JSX.Element {
     toggleTheme,
     selectedIds,
     clearSelection,
-    askRemove
+    askRemove,
+    updateStatus
   } = useApp()
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
@@ -139,6 +140,16 @@ export default function App(): React.JSX.Element {
 
         <div className="flex-1" />
 
+        {updateStatus?.state === 'ready' ? (
+          <button
+            onClick={() => void window.api.installUpdate()}
+            className="mx-2 mb-2 rounded-md bg-accent px-2 py-1.5 text-[11px] font-semibold text-white hover:bg-accent-hi"
+            title={`Version ${updateStatus.version} downloaded — restart to apply`}
+          >
+            <span className="hidden md:inline">Update v{updateStatus.version} — restart</span>
+            <span className="md:hidden">↻</span>
+          </button>
+        ) : null}
         <div className="border-t border-line px-2 py-3 md:px-4">
           <div
             className={`flex items-center justify-center gap-1.5 text-[11px] font-medium md:justify-start ${ready ? 'text-ok' : 'text-warn'}`}

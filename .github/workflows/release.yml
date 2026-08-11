@@ -38,3 +38,4 @@ jobs:
           files: |
             release/*.exe
             release/*.blockmap
+            release/latest.yml

@@ -5,7 +5,8 @@ import type {
   JobAction,
   NewJobInput,
   ProbeResult,
-  Settings
+  Settings,
+  UpdateStatus
 } from '../shared/types'
 
 const api = {
@@ -23,6 +24,11 @@ const api = {
   appInfo: (): Promise<{ version: string; ytdlpVersion: string | null }> =>
     ipcRenderer.invoke('app:info'),
   openUrl: (url: string): Promise<void> => ipcRenderer.invoke('shell:openUrl', url),
+  updateStatus: (): Promise<UpdateStatus> => ipcRenderer.invoke('update:status'),
+  installUpdate: (): Promise<void> => ipcRenderer.invoke('update:install'),
+  onUpdateStatus: (cb: (s: UpdateStatus) => void): void => {
+    ipcRenderer.on('update:status', (_e, s: UpdateStatus) => cb(s))
+  },
   chooseDir: (): Promise<string | null> => ipcRenderer.invoke('dialog:chooseDir'),
   showInFolder: (p: string): Promise<void> => ipcRenderer.invoke('shell:openPath', p),
   onJobs: (cb: (jobs: Job[]) => void): void => {

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { EngineStatus, Job, Settings } from '../../shared/types'
+import type { EngineStatus, Job, Settings, UpdateStatus } from '../../shared/types'
 
 export type FilterTab = 'all' | 'downloading' | 'completed' | 'failed'
 export type Theme = 'dark' | 'light'
@@ -17,6 +17,7 @@ interface AppState {
   speedHistory: Record<string, number[]>
   settings: Settings | null
   engineStatus: EngineStatus | null
+  updateStatus: UpdateStatus | null
   addDialogOpen: boolean
   prefillUrl: string
   tab: FilterTab
@@ -43,6 +44,7 @@ export const useApp = create<AppState>((set, get) => ({
   speedHistory: {},
   settings: null,
   engineStatus: null,
+  updateStatus: null,
   addDialogOpen: false,
   prefillUrl: '',
   tab: 'all',
@@ -109,6 +111,7 @@ export const useApp = create<AppState>((set, get) => ({
       set({ jobs, speedHistory: history, selectedIds: sel })
     })
     window.api.onEngineStatus((engineStatus) => set({ engineStatus }))
+    window.api.onUpdateStatus((updateStatus) => set({ updateStatus }))
     window.api.onClipboardUrl((url) => {
       if (!get().addDialogOpen) get().openAddDialog(url)
     })

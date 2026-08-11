@@ -28,7 +28,8 @@ const DEFAULT_SETTINGS = (): Settings => ({
   embedSubs: false,
   writeSubs: false,
   subLangs: 'en',
-  useFirefoxCookies: false
+  useFirefoxCookies: false,
+  closeToTray: true
 })
 
 export class Engine extends EventEmitter {
@@ -243,6 +244,18 @@ export class Engine extends EventEmitter {
         break
     }
     this.tick()
+  }
+
+  pauseAll(): void {
+    for (const j of this.jobs.values()) {
+      if (j.state === 'active' || j.state === 'queued') this.action('pause', j.id)
+    }
+  }
+
+  resumeAll(): void {
+    for (const j of this.jobs.values()) {
+      if (j.state === 'paused') this.action('resume', j.id)
+    }
   }
 
   remove(id: string, deleteFile: boolean): void {
