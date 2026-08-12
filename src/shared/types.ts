@@ -98,6 +98,10 @@ export interface Settings {
   useFirefoxCookies: boolean
   /** Closing the window hides to the system tray instead of quitting */
   closeToTray: boolean
+  /** Local bridge the browser extension talks to (127.0.0.1, extension origins only) */
+  extensionBridge: boolean
+  /** Launch minimized to tray when Windows starts */
+  startWithWindows: boolean
 }
 
 export interface UpdateStatus {

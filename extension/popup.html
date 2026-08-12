@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        width: 240px;
+        margin: 0;
+        padding: 14px;
+        background: #171b21;
+        color: #e8ecf1;
+        font: 13px 'Segoe UI', sans-serif;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #d9a514;
+      }
+      .dot.ok {
+        background: #3fb27f;
+      }
+      .dot.err {
+        background: #e5484d;
+      }
+      button {
+        width: 100%;
+        padding: 8px 0;
+        border: 0;
+        border-radius: 6px;
+        background: #e5484d;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:disabled {
+        background: #3a4351;
+        cursor: default;
+      }
+      a {
+        color: #4fa8ff;
+        font-size: 12px;
+      }
+      #hint {
+        margin-top: 10px;
+        font-size: 11px;
+        color: #8b98a9;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <span id="dot" class="dot"></span>
+      <span id="status">Checking YTDM…</span>
+    </div>
+    <button id="send" disabled>Send this tab to YTDM</button>
+    <div id="hint"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>

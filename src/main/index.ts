@@ -6,6 +6,7 @@ import { BinaryManager, binDir } from './engine/binaries'
 import { startClipboardWatcher } from './engine/clipboard'
 import { createStore } from './engine/db'
 import { Engine } from './engine/queue'
+import { startExtensionBridge } from './engine/extserver'
 import { registerIpc } from './ipc'
 import { startAutoUpdater } from './updater'
 
@@ -90,7 +91,9 @@ if (!gotLock) {
     const store = createStore()
     engine = new Engine(store, bins)
 
+    const startHidden = process.argv.includes('--hidden')
     mainWindow = new BrowserWindow({
+      show: !startHidden, // login-item launches sit quietly in the tray
       width: 1200,
       height: 760,
       minWidth: 640,
@@ -114,6 +117,21 @@ if (!gotLock) {
       () => engine?.settings.clipboardWatch ?? false,
       (url) => mainWindow?.webContents.send('clipboard:url', url)
     )
+
+    startExtensionBridge({
+      isEnabled: () => engine?.settings.extensionBridge ?? false,
+      onUrl: (url) => {
+        showWindow()
+        mainWindow?.webContents.send('clipboard:url', url)
+      }
+    })
+
+    // Honor the start-with-Windows preference on boot (covers upgrades where
+    // the setting was saved by an older version).
+    app.setLoginItemSettings({
+      openAtLogin: engine?.settings.startWithWindows ?? false,
+      args: ['--hidden']
+    })
 
     if (process.env['ELECTRON_RENDERER_URL']) {
       mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])

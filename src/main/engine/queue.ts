@@ -29,7 +29,9 @@ const DEFAULT_SETTINGS = (): Settings => ({
   writeSubs: false,
   subLangs: 'en',
   useFirefoxCookies: false,
-  closeToTray: true
+  closeToTray: true,
+  extensionBridge: true,
+  startWithWindows: false
 })
 
 export class Engine extends EventEmitter {

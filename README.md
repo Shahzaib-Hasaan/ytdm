@@ -69,9 +69,24 @@ npm run dist       # production NSIS installer -> release/
 
 Requires Node 22+. Release builds are produced by [GitHub Actions](.github/workflows/release.yml) from tagged commits.
 
+## Browser extension
+
+The [`extension/`](extension) folder contains a WebExtension that puts a **Download**
+button on YouTube video, Shorts, and playlist pages — one click sends the link to the
+YTDM app (which must be running; it lives in your tray).
+
+**Firefox:** `about:debugging` → *This Firefox* → *Load Temporary Add-on* → pick
+`extension/manifest.json`. (Store listing planned.)
+
+**Chrome / Edge:** `chrome://extensions` → enable *Developer mode* → *Load unpacked* →
+pick the `extension` folder.
+
+The extension talks only to the app on your own machine (`127.0.0.1`), and the app
+accepts requests from browser extensions only.
+
 ## Roadmap
 
-- Browser extension with a download button on YouTube pages (Firefox first)
+- Extension store listings (Firefox AMO, Edge Add-ons)
 - Download scheduler and post-queue actions
 - Channel subscriptions — auto-download new uploads
 - Download history and categories

@@ -1,0 +1,27 @@
+name: Bug report
+description: Something broke or behaved unexpectedly
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: YTDM version
+      description: Sidebar → ⓘ About shows it (e.g. v1.0.3)
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Error text
+      description: Hover the download's status chip and copy the error shown, if any.
+  - type: input
+    id: url
+    attributes:
+      label: Video/playlist URL (if the issue is about a specific download)

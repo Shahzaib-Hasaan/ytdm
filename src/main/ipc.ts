@@ -19,7 +19,13 @@ export function registerIpc(engine: Engine, bins: BinaryManager, win: () => Brow
   })
 
   ipcMain.handle('settings:get', () => engine.settings)
-  ipcMain.handle('settings:set', (_e, patch: Partial<Settings>) => engine.updateSettings(patch))
+  ipcMain.handle('settings:set', (_e, patch: Partial<Settings>) => {
+    const next = engine.updateSettings(patch)
+    if (patch.startWithWindows !== undefined) {
+      app.setLoginItemSettings({ openAtLogin: patch.startWithWindows, args: ['--hidden'] })
+    }
+    return next
+  })
 
   ipcMain.handle('engine:status', () => bins.status)
 
