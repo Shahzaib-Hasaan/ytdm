@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-11 · **Target:** Windows-first desktop app, IDM-style, YouTube-specialized (browser extension, playlist support, queue, pause/resume, acceleration, scheduler, speed limiter, clipboard monitoring).
 **Developer profile:** strong TypeScript/JavaScript + Python, zero Rust.
-**Method:** 6 parallel research agents (framework, extraction, download engine, browser extension, packaging, feature map) with live web research + adversarial tech-lead synthesis. ~400k tokens of research; sources listed at the bottom of each section.
+**Method:** comparative research across six areas (framework, extraction, download engine, browser extension, packaging, feature map) with primary sources reviewed for each; sources listed at the bottom of each section.
 
 ---
 
