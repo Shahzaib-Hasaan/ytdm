@@ -14,6 +14,13 @@ nsis:
   allowToChangeInstallationDirectory: true
   perMachine: false
   deleteAppDataOnUninstall: false
+linux:
+  icon: build/icon.png
+  category: Network
+  maintainer: Shahzaib Hassan <shahxeebhassan@gmail.com>
+  synopsis: Download manager for YouTube
+  target:
+    - AppImage
 extraResources:
   - from: build/icon.png
     to: icon.png

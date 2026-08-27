@@ -1,7 +1,7 @@
 import { spawn, type ChildProcess } from 'node:child_process'
 import path from 'node:path'
 import type { Job, ProbeResult, QualityPreset, Settings } from '../../shared/types'
-import { execCapture, ytdlpPath } from './binaries'
+import { execCapture, IS_WIN, ytdlpPath } from './binaries'
 
 interface PresetSpec {
   format?: string
@@ -192,6 +192,9 @@ export function startDownload(
   console.log(`[ytdlp] spawn job=${job.id.slice(0, 8)} args: ${args.join(' ')}`)
   const child: ChildProcess = spawn(ytdlpPath(), args, {
     windowsHide: true,
+    // POSIX: own process group so pause/cancel can kill yt-dlp AND its ffmpeg
+    // children in one signal (the taskkill /t equivalent).
+    detached: !IS_WIN,
     // PYTHONUNBUFFERED: line-flushed stdout — block buffering on a pipe would
     // batch progress into multi-second bursts. PYTHONIOENCODING: without it,
     // Windows console encoding mangles non-ASCII titles (e.g. "→") in printed
@@ -292,9 +295,16 @@ export function startDownload(
   return {
     kill(): void {
       killed = true
-      if (child.pid) {
-        // yt-dlp spawns ffmpeg children; kill the whole tree on Windows.
+      if (!child.pid) return
+      if (IS_WIN) {
+        // yt-dlp spawns ffmpeg children; take down the whole tree.
         spawn('taskkill', ['/pid', String(child.pid), '/t', '/f'], { windowsHide: true })
+      } else {
+        try {
+          process.kill(-child.pid, 'SIGKILL') // negative pid = process group
+        } catch {
+          child.kill('SIGKILL')
+        }
       }
     }
   }
