@@ -21,6 +21,8 @@ linux:
   synopsis: Download manager for YouTube
   target:
     - AppImage
+    - rpm
+    - deb
 extraResources:
   - from: build/icon.png
     to: icon.png

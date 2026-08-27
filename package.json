@@ -11,7 +11,7 @@
   },
   "keywords": [],
   "author": "Shahzaib Hassan <shahxeebhassan@gmail.com>",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "electron-updater": "^6.8.9",
