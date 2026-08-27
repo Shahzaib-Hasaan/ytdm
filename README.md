@@ -19,6 +19,8 @@ Queue · Playlists · Subtitles · Pause & resume · Auto-updates
 
 ---
 
+![YTDM downloading a 41-video playlist](docs/screenshot.png)
+
 ## Features
 
 - **Download queue** — parallel downloads with pause, resume, retry, and crash recovery; interrupted downloads pick up where they left off
