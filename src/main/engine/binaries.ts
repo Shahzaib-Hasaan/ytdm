@@ -7,27 +7,33 @@ import { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import type { EngineStatus } from '../../shared/types'
 
-// Nightly channel: YouTube breaks extraction constantly; stable lags fixes by days/weeks.
-const YTDLP_URL =
-  'https://github.com/yt-dlp/yt-dlp-nightly-builds/releases/latest/download/yt-dlp.exe'
-// Mandatory JS runtime for nsig challenge solving since yt-dlp 2025.11.12.
-// Placed next to yt-dlp.exe -> auto-discovered.
-const DENO_URL =
-  'https://github.com/denoland/deno/releases/latest/download/deno-x86_64-pc-windows-msvc.zip'
-// LGPL build on purpose: remuxing does no encoding, avoids GPL + patent-pool exposure.
-const FFMPEG_URL =
-  'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-lgpl.zip'
+export const IS_WIN = process.platform === 'win32'
+
+// Per-platform artifacts. Nightly yt-dlp: YouTube breaks extraction constantly,
+// stable lags fixes by days/weeks. LGPL ffmpeg on purpose: remuxing does no
+// encoding, avoids GPL + patent-pool exposure. Deno: mandatory JS runtime for
+// yt-dlp's nsig challenge solving; placed next to yt-dlp -> auto-discovered.
+const NIGHTLY = 'https://github.com/yt-dlp/yt-dlp-nightly-builds/releases/latest/download'
+const YTDLP_URL = IS_WIN ? `${NIGHTLY}/yt-dlp.exe` : `${NIGHTLY}/yt-dlp_linux`
+const DENO_URL = IS_WIN
+  ? 'https://github.com/denoland/deno/releases/latest/download/deno-x86_64-pc-windows-msvc.zip'
+  : 'https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip'
+const FFMPEG_URL = IS_WIN
+  ? 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-lgpl.zip'
+  : 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-linux64-lgpl.tar.xz'
+
+const EXE = IS_WIN ? '.exe' : ''
 
 export function binDir(): string {
   return path.join(app.getPath('userData'), 'bin')
 }
 
 export function ytdlpPath(): string {
-  return path.join(binDir(), 'yt-dlp.exe')
+  return path.join(binDir(), `yt-dlp${EXE}`)
 }
 
 export function denoPath(): string {
-  return path.join(binDir(), 'deno.exe')
+  return path.join(binDir(), `deno${EXE}`)
 }
 
 async function exists(p: string): Promise<boolean> {
@@ -37,6 +43,10 @@ async function exists(p: string): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+async function makeExecutable(p: string): Promise<void> {
+  if (!IS_WIN) await fs.chmod(p, 0o755).catch(() => {})
 }
 
 export function execCapture(
@@ -63,7 +73,7 @@ export function execCapture(
 }
 
 async function whereInPath(name: string): Promise<string | null> {
-  const { code, out } = await execCapture('where', [name], 5000)
+  const { code, out } = await execCapture(IS_WIN ? 'where' : 'which', [name], 5000)
   if (code === 0 && out.trim()) return out.trim().split(/\r?\n/)[0]
   return null
 }
@@ -78,11 +88,17 @@ async function downloadTo(url: string, dest: string): Promise<void> {
   await fs.rename(tmp, dest)
 }
 
-/** Windows 10+ ships bsdtar, which extracts zip archives — no extra dependency. */
-async function extractZip(zipFile: string, destDir: string): Promise<void> {
+/**
+ * Archive extraction with what each OS ships: Windows 10+ bsdtar handles zip;
+ * Linux GNU tar handles tar.xz but not zip, so .zip goes through unzip there.
+ */
+async function extractArchive(file: string, destDir: string): Promise<void> {
   await fs.mkdir(destDir, { recursive: true })
-  const { code, err } = await execCapture('tar', ['-xf', zipFile, '-C', destDir], 120_000)
-  if (code !== 0) throw new Error(`unzip failed: ${err}`)
+  const useUnzip = !IS_WIN && file.endsWith('.zip')
+  const { code, err } = useUnzip
+    ? await execCapture('unzip', ['-o', file, '-d', destDir], 120_000)
+    : await execCapture('tar', ['-xf', file, '-C', destDir], 120_000)
+  if (code !== 0) throw new Error(`extract failed: ${err}`)
 }
 
 async function findFile(root: string, name: string): Promise<string | null> {
@@ -144,9 +160,10 @@ export class BinaryManager {
     if (!(await exists(ytdlpPath()))) {
       this.emit({ binMessage: 'downloading yt-dlp (nightly)…' })
       await downloadTo(YTDLP_URL, ytdlpPath())
+      await makeExecutable(ytdlpPath())
     } else {
-      // TODO v1.1: app-owned SHA2-256SUMS-verified updater with atomic swap + rollback
-      // (locked in TECH_STACK.md). yt-dlp's own -U is good enough for the dev skeleton.
+      // TODO: app-owned SHA2-256SUMS-verified updater with atomic swap + rollback
+      // (locked in TECH_STACK.md). yt-dlp's own -U is good enough for now.
       this.emit({ binMessage: 'updating yt-dlp…' })
       await execCapture(ytdlpPath(), ['-U', '--update-to', 'nightly@latest'], 120_000)
     }
@@ -170,8 +187,9 @@ export class BinaryManager {
       this.emit({ binMessage: 'downloading Deno runtime…' })
       const zip = path.join(binDir(), 'deno.zip')
       await downloadTo(DENO_URL, zip)
-      await extractZip(zip, binDir())
+      await extractArchive(zip, binDir())
       await fs.rm(zip, { force: true })
+      await makeExecutable(denoPath())
       this.emit({ denoFound: await exists(denoPath()) })
     } catch {
       // Non-fatal: yt-dlp still works with reduced format availability.
@@ -180,7 +198,7 @@ export class BinaryManager {
   }
 
   private async ensureFfmpeg(): Promise<void> {
-    const local = path.join(binDir(), 'ffmpeg.exe')
+    const local = path.join(binDir(), `ffmpeg${EXE}`)
     if (await exists(local)) {
       this.ffmpegLocation = binDir()
       this.emit({ ffmpegFound: true })
@@ -193,15 +211,18 @@ export class BinaryManager {
       return
     }
     this.emit({ binMessage: 'downloading ffmpeg (LGPL)…' })
-    const zip = path.join(binDir(), 'ffmpeg.zip')
+    const archive = path.join(binDir(), IS_WIN ? 'ffmpeg.zip' : 'ffmpeg.tar.xz')
     const extractDir = path.join(binDir(), 'ffmpeg-extract')
-    await downloadTo(FFMPEG_URL, zip)
-    await extractZip(zip, extractDir)
-    for (const name of ['ffmpeg.exe', 'ffprobe.exe']) {
+    await downloadTo(FFMPEG_URL, archive)
+    await extractArchive(archive, extractDir)
+    for (const name of [`ffmpeg${EXE}`, `ffprobe${EXE}`]) {
       const found = await findFile(extractDir, name)
-      if (found) await fs.copyFile(found, path.join(binDir(), name))
+      if (found) {
+        await fs.copyFile(found, path.join(binDir(), name))
+        await makeExecutable(path.join(binDir(), name))
+      }
     }
-    await fs.rm(zip, { force: true })
+    await fs.rm(archive, { force: true })
     await fs.rm(extractDir, { recursive: true, force: true })
     if (await exists(local)) {
       this.ffmpegLocation = binDir()

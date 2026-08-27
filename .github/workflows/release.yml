@@ -11,8 +11,15 @@ permissions:
   contents: write
 
 jobs:
-  windows:
-    runs-on: windows-latest
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            args: --win
+          - os: ubuntu-latest
+            args: --linux
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
@@ -25,17 +32,18 @@ jobs:
 
       - run: npm run build
 
-      - run: npx electron-builder --win --publish never
+      - run: npx electron-builder ${{ matrix.args }} --publish never
 
       # --- SignPath code signing goes here once the project is approved ---
       # https://about.signpath.io/documentation/signpath-foundation
       # The SignPath GitHub Action submits release/*.exe for signing and
       # replaces it with the signed binary before the release step below.
 
-      - name: Attach installer to release
+      - name: Attach artifacts to release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             release/*.exe
+            release/*.AppImage
             release/*.blockmap
-            release/latest.yml
+            release/latest*.yml

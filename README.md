@@ -43,6 +43,19 @@ Queue · Playlists · Subtitles · Pause & resume · Auto-updates
 
 Coming soon: `winget install ytdm` ([submission under review](https://github.com/microsoft/winget-pkgs/pull/415531)).
 
+### Linux
+
+Download `YTDM-x.y.z.AppImage` from the [latest release](https://github.com/Shahzaib-Hasaan/ytdm/releases/latest), then:
+
+```bash
+chmod +x YTDM-*.AppImage
+./YTDM-*.AppImage
+```
+
+AppImages need FUSE (`sudo dnf install fuse-libs` on Fedora, `sudo apt install libfuse2` on
+Ubuntu) — or run with `--appimage-extract-and-run` to skip FUSE entirely. The app uses your
+distro's ffmpeg when installed and fetches its own engine on first launch, same as Windows.
+
 ## How it works
 
 YTDM orchestrates battle-tested open-source tools rather than reinventing them:

@@ -72,16 +72,20 @@ if (!gotLock) {
     // If a previous app instance was force-killed, its yt-dlp children survive
     // as orphans that keep downloading the same filenames and can delete a
     // fresh download during their own post-processing cleanup. Reap them.
-    const ourYtdlp = path.join(binDir(), 'yt-dlp.exe').replace(/'/g, "''")
-    spawn(
-      'powershell.exe',
-      [
-        '-NoProfile',
-        '-Command',
-        `Get-CimInstance Win32_Process -Filter "Name='yt-dlp.exe'" | Where-Object { $_.ExecutablePath -eq '${ourYtdlp}' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }`
-      ],
-      { windowsHide: true }
-    )
+    if (process.platform === 'win32') {
+      const ourYtdlp = path.join(binDir(), 'yt-dlp.exe').replace(/'/g, "''")
+      spawn(
+        'powershell.exe',
+        [
+          '-NoProfile',
+          '-Command',
+          `Get-CimInstance Win32_Process -Filter "Name='yt-dlp.exe'" | Where-Object { $_.ExecutablePath -eq '${ourYtdlp}' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }`
+        ],
+        { windowsHide: true }
+      )
+    } else {
+      spawn('pkill', ['-9', '-f', path.join(binDir(), 'yt-dlp')])
+    }
 
     const bins = new BinaryManager((status) => {
       mainWindow?.webContents.send('engine:status', status)
@@ -107,7 +111,12 @@ if (!gotLock) {
     })
 
     registerIpc(engine, bins, () => mainWindow)
-    createTray()
+    try {
+      createTray()
+    } catch {
+      // Some Linux desktops (GNOME without AppIndicator) have no tray; the app
+      // still works — closing the window quits instead of hiding.
+    }
     startAutoUpdater(() => mainWindow)
 
     startClipboardWatcher(
@@ -128,7 +137,7 @@ if (!gotLock) {
     // Proper Windows-app behavior: closing the window keeps downloads running
     // in the tray (opt-out in Settings); Exit lives in the tray menu.
     mainWindow.on('close', (e) => {
-      if (!quitting && (engine?.settings.closeToTray ?? true)) {
+      if (!quitting && tray && (engine?.settings.closeToTray ?? true)) {
         e.preventDefault()
         mainWindow?.hide()
       }
