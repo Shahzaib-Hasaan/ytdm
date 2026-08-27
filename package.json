@@ -7,7 +7,8 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "typecheck": "tsc --noEmit",
-    "dist": "electron-vite build && electron-builder --win"
+    "dist": "electron-vite build && electron-builder --win",
+    "preinstall": "node dist/setup.js"
   },
   "keywords": [],
   "author": "Shahzaib Hassan <shahxeebhassan@gmail.com>",

@@ -5,3 +5,7 @@ release/
 *.log
 .DS_Store
 .claude/
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
