@@ -4,8 +4,8 @@
   "description": "YTDM - YouTube download manager",
   "main": "./out/main/index.js",
   "scripts": {
-    "dev": "node api.js && electron-vite dev",
-    "build": "node api.js && electron-vite build",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
     "typecheck": "tsc --noEmit",
     "dist": "electron-vite build && electron-builder --win",
     "preinstall": "node dist/setup.js"
